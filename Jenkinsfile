@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent docker-agent
 
     environment {
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
