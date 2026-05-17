@@ -2,7 +2,7 @@ using System.Text.Json;
 using CineTicket.Infrastructure;
 using CineTicket.Infrastructure.Data;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-
+//comentario de prueba
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
