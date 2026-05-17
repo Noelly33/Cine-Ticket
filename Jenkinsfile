@@ -3,6 +3,10 @@ pipeline {
         label 'docker-agent'
     }
 
+    triggers {
+        githubPush()
+    }
+
     environment {
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
         SOLUTION           = 'CineTicket.sln'
@@ -16,14 +20,12 @@ pipeline {
         CONTAINER_NAME     = 'cineticket-api'
         APP_PORT           = '8080'
 
-        // Base de datos
         DB_CONTAINER_NAME  = 'cineticket-sqlserver'
         NETWORK_NAME       = 'cineticket-net'
         DB_PORT            = '1433'
         DB_NAME            = 'CineTicket'
         SA_PASSWORD        = credentials('cineticket-sa-password')
 
-        // Notificaciones — credencial 'resend-api-key' configurada en Jenkins
         RESEND_API_KEY     = credentials('resend-api-key')
         NOTIFY_RECIPIENTS  = 'angeldaniel6709@gmail.com,gnoely319@gmail.com'
     }
