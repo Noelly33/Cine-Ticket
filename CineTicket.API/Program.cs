@@ -12,6 +12,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(
     builder.Configuration.GetConnectionString("DefaultConnection")!);
 
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<AppDbContext>("database");
+
 var app = builder.Build();
 
 await app.Services.InicializarBaseDeDatosAsync();

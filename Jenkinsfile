@@ -5,21 +5,27 @@ pipeline {
 
     environment {
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
-        SOLUTION      = 'CineTicket.sln'
-        PROJECT_API   = 'CineTicket.API/CineTicket.API.csproj'
-        PROJECT_INFRA = 'CineTicket.Infrastructure/CineTicket.Infrastructure.csproj'
-        PROJECT_TESTS = 'CineTicket.Tests/CineTicket.Tests.csproj'
-        PUBLISH_DIR   = 'publish'
-        TEST_RESULTS  = 'TestResults/junit-results.xml'
-        IMAGE_NAME    = 'cineticket-api'
-        CONTAINER_NAME = 'cineticket-api'
-        APP_PORT      = '8080'
+        SOLUTION           = 'CineTicket.sln'
+        PROJECT_API        = 'CineTicket.API/CineTicket.API.csproj'
+        PROJECT_INFRA      = 'CineTicket.Infrastructure/CineTicket.Infrastructure.csproj'
+        PROJECT_TESTS      = 'CineTicket.Tests/CineTicket.Tests.csproj'
+        PROJECT_NOTIFY     = 'CineTicket.Notifications/CineTicket.Notifications.csproj'
+        PUBLISH_DIR        = 'publish'
+        TEST_RESULTS       = 'TestResults/junit-results.xml'
+        IMAGE_NAME         = 'cineticket-api'
+        CONTAINER_NAME     = 'cineticket-api'
+        APP_PORT           = '8080'
 
-        DB_CONTAINER_NAME = 'cineticket-sqlserver'
-        NETWORK_NAME      = 'cineticket-net'
-        DB_PORT           = '1433'
-        DB_NAME           = 'CineTicket'
-        SA_PASSWORD       = credentials('cineticket-sa-password')
+        // Base de datos
+        DB_CONTAINER_NAME  = 'cineticket-sqlserver'
+        NETWORK_NAME       = 'cineticket-net'
+        DB_PORT            = '1433'
+        DB_NAME            = 'CineTicket'
+        SA_PASSWORD        = credentials('cineticket-sa-password')
+
+        // Notificaciones — credencial 'resend-api-key' configurada en Jenkins
+        RESEND_API_KEY     = credentials('resend-api-key')
+        NOTIFY_RECIPIENTS  = 'angeldaniel6709@gmail.com,gnoely319@gmail.com'
     }
 
     stages {
@@ -27,7 +33,6 @@ pipeline {
         stage('Build') {
             steps {
                 sh "dotnet restore ${SOLUTION}"
-
                 sh "dotnet build ${SOLUTION} --configuration Release --no-restore"
             }
         }
@@ -64,13 +69,10 @@ pipeline {
         stage('Start Database') {
             steps {
                 sh """
-                    # Si el contenedor ya existe pero está detenido, lo iniciamos
                     if docker ps -aq --filter name=^/${DB_CONTAINER_NAME}\$ | grep -q .; then
                         docker start ${DB_CONTAINER_NAME} || true
-                        # Asegurar que esté conectado a la red
                         docker network connect ${NETWORK_NAME} ${DB_CONTAINER_NAME} || true
                     else
-                        # Azure SQL Edge: compatible con EF Core/SQL Server, requiere ~500 MB RAM
                         docker run -d \
                             --name ${DB_CONTAINER_NAME} \
                             --network ${NETWORK_NAME} \
@@ -106,12 +108,10 @@ pipeline {
 
         stage('Run Migrations') {
             steps {
-                echo '== Instalando dotnet-ef (si no está instalado) =='
                 sh """
                     export PATH="\$PATH:\$HOME/.dotnet/tools"
                     dotnet tool install --global dotnet-ef || true
                 """
-
                 sh """
                     export PATH="\$PATH:\$HOME/.dotnet/tools"
                     dotnet ef database update \
@@ -124,11 +124,9 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo '== Deteniendo contenedor anterior (si existe) =='
                 sh "docker stop ${CONTAINER_NAME} || true"
-                sh "docker rm ${CONTAINER_NAME} || true"
+                sh "docker rm   ${CONTAINER_NAME} || true"
 
-                echo '== Desplegando nuevo contenedor =='
                 sh """
                     docker run -d \
                         --name ${CONTAINER_NAME} \
@@ -139,17 +137,30 @@ pipeline {
                         ${IMAGE_NAME}:latest
                 """
 
-                echo '== Verificando que el contenedor está corriendo =='
-                sh "docker ps --filter name=${CONTAINER_NAME} --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
+                sh "docker ps --filter network=${NETWORK_NAME} --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
             }
         }
     }
 
     post {
         success {
+            script {
+                env.BUILD_STATUS = 'SUCCESS'
+                env.STAGE_NAME   = 'Deploy'
+            }
+            sh """
+                dotnet run --project ${PROJECT_NOTIFY} -- "${NOTIFY_RECIPIENTS}"
+            """
             echo "Pipeline completado exitosamente. Contenedor '${CONTAINER_NAME}' desplegado en el puerto ${APP_PORT}."
         }
         failure {
+            script {
+                env.BUILD_STATUS = 'FAILURE'
+                env.STAGE_NAME   = env.STAGE_NAME ?: 'Unknown'
+            }
+            sh """
+                dotnet run --project ${PROJECT_NOTIFY} -- "${NOTIFY_RECIPIENTS}"
+            """
             echo 'Pipeline fallido. Revisa los logs para mas detalles.'
         }
         always {

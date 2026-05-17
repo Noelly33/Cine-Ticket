@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CineTicket.Infrastructure",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CineTicket.Tests", "CineTicket.Tests\CineTicket.Tests.csproj", "{6D8A00ED-C4B1-4236-B1BB-AE7885912ADD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CineTicket.Notifications", "CineTicket.Notifications\CineTicket.Notifications.csproj", "{D7E8F9A0-B1C2-4D3E-5F6A-7B8C9D0E1F2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{6D8A00ED-C4B1-4236-B1BB-AE7885912ADD}.Release|x64.Build.0 = Release|Any CPU
 		{6D8A00ED-C4B1-4236-B1BB-AE7885912ADD}.Release|x86.ActiveCfg = Release|Any CPU
 		{6D8A00ED-C4B1-4236-B1BB-AE7885912ADD}.Release|x86.Build.0 = Release|Any CPU
+		{D7E8F9A0-B1C2-4D3E-5F6A-7B8C9D0E1F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7E8F9A0-B1C2-4D3E-5F6A-7B8C9D0E1F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7E8F9A0-B1C2-4D3E-5F6A-7B8C9D0E1F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7E8F9A0-B1C2-4D3E-5F6A-7B8C9D0E1F2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CineTicket CI/CD</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:30px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:{{color}};padding:28px 32px;">
+              <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;">{{status}}</h1>
+              <p style="margin:6px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Pipeline de despliegue · CineTicket</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:28px 32px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+
+                <tr>
+                  <td style="padding-bottom:16px;border-bottom:1px solid #eeeeee;">
+                    <p style="margin:0;font-size:13px;color:#888888;text-transform:uppercase;letter-spacing:0.5px;">Proyecto</p>
+                    <p style="margin:4px 0 0;font-size:16px;color:#222222;font-weight:600;">{{project}}</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:16px 0;border-bottom:1px solid #eeeeee;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="50%">
+                          <p style="margin:0;font-size:13px;color:#888888;text-transform:uppercase;letter-spacing:0.5px;">Build #</p>
+                          <p style="margin:4px 0 0;font-size:15px;color:#222222;font-weight:600;">#{{buildId}}</p>
+                        </td>
+                        <td width="50%">
+                          <p style="margin:0;font-size:13px;color:#888888;text-transform:uppercase;letter-spacing:0.5px;">Stage</p>
+                          <p style="margin:4px 0 0;font-size:15px;color:#222222;font-weight:600;">{{stage}}</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:16px 0;">
+                    <p style="margin:0;font-size:13px;color:#888888;text-transform:uppercase;letter-spacing:0.5px;">Commit</p>
+                    <p style="margin:4px 0 0;font-size:14px;color:#444444;">{{commitMsg}}</p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td style="padding:0 32px 28px;">
+              <a href="{{url}}"
+                 style="display:inline-block;background-color:{{color}};color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:5px;font-size:14px;font-weight:600;">
+                Ver logs en Jenkins
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f9f9f9;padding:16px 32px;border-top:1px solid #eeeeee;">
+              <p style="margin:0;font-size:12px;color:#aaaaaa;text-align:center;">
+                Este correo fue generado automáticamente por el pipeline de CI/CD de CineTicket.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
