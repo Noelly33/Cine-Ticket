@@ -26,7 +26,7 @@ pipeline {
         DB_NAME            = 'CineTicket'
         SA_PASSWORD        = credentials('cineticket-sa-password')
 
-        RESEND_API_KEY     = credentials('resend-api-key')
+        RESEND_API_KEY     = credentials('resend_api_key')
         NOTIFY_RECIPIENTS  = 'angeldaniel6709@gmail.com,gnoely319@gmail.com'
     }
 
