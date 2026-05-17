@@ -4,7 +4,6 @@ using CineTicket.Infrastructure.Data;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
-//prueba de envio  de webhook
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
