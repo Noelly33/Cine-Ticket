@@ -1,5 +1,7 @@
 pipeline {
-    agent docker-agent
+    agent {
+        label 'docker-agent'
+    }
 
     environment {
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
