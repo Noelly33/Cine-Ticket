@@ -70,6 +70,7 @@ pipeline {
                         # Asegurar que esté conectado a la red
                         docker network connect ${NETWORK_NAME} ${DB_CONTAINER_NAME} || true
                     else
+                        # Azure SQL Edge: compatible con EF Core/SQL Server, requiere ~500 MB RAM
                         docker run -d \
                             --name ${DB_CONTAINER_NAME} \
                             --network ${NETWORK_NAME} \
@@ -77,21 +78,23 @@ pipeline {
                             -e MSSQL_SA_PASSWORD='${SA_PASSWORD}' \
                             -p ${DB_PORT}:1433 \
                             --restart unless-stopped \
-                            mcr.microsoft.com/mssql/server:2022-latest
+                            mcr.microsoft.com/azure-sql-edge:latest
                     fi
                 """
 
                 sh """
+                    echo 'Esperando que el motor SQL este listo para aceptar conexiones...'
                     for i in \$(seq 1 30); do
                         if docker exec ${DB_CONTAINER_NAME} \
-                            /opt/mssql-tools18/bin/sqlcmd \
+                            /opt/mssql-tools/bin/sqlcmd \
                             -S localhost -U sa -P '${SA_PASSWORD}' \
-                            -Q 'SELECT 1' -C -l 2 > /dev/null 2>&1; then
-                            echo "SQL Server listo en el intento \$i."
+                            -Q 'SELECT 1' -b -l 2 > /dev/null 2>&1; then
+                            echo "Base de datos lista en el intento \$i."
                             break
                         fi
                         if [ \$i -eq 30 ]; then
-                            echo 'SQL Server no respondio despues de 150 segundos.'
+                            echo 'La base de datos no respondio despues de 150 segundos.'
+                            docker logs ${DB_CONTAINER_NAME}
                             exit 1
                         fi
                         echo "Intento \$i/30 — esperando 5s..."
