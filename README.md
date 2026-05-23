@@ -1,2 +1,2 @@
 # Cine-Ticket
-API para gestion de tickets de cines
+API para gestion de tickets
